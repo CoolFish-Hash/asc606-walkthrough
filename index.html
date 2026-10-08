@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>From signed deal to revenue: an ASC 606 walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF2F2;--panel:#FFFFFF;--ink:#13262E;--mute:#52666E;--rule:#CBD6D8;--teal:#0F6B6B;--a:#0F6B6B;--b:#C98A12;--c:#5B4B9A;--warn:#B3401F;--soft:#E1ECEC;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A1F;--panel:#16252C;--ink:#E6EEF0;--mute:#9DB0B6;--rule:#2B4048;--teal:#4FC3B8;--a:#4FC3B8;--b:#E6B04A;--c:#A596E6;--warn:#F08A66;--soft:#1D3239}}
+:root[data-theme="dark"]{--bg:#0F1A1F;--panel:#16252C;--ink:#E6EEF0;--mute:#9DB0B6;--rule:#2B4048;--teal:#4FC3B8;--a:#4FC3B8;--b:#E6B04A;--c:#A596E6;--warn:#F08A66;--soft:#1D3239}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","IBM Plex Sans",sans-serif;line-height:1.15;margin:0}
+header{max-width:1120px;margin:0 auto;padding:36px 20px 8px}
+h1{font-size:clamp(28px,5vw,46px);font-weight:700;max-width:18ch}
+header p{max-width:62ch;color:var(--mute);margin:12px 0 0}
+main{max-width:1120px;margin:0 auto;padding:20px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px;align-items:start}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.steps button{flex:1;min-width:84px;border:1px solid var(--rule);background:transparent;color:var(--mute);padding:8px 6px;border-radius:6px;font:inherit;font-size:14px;cursor:pointer}
+.steps button.on{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600}
+.steps button.done{color:var(--ink);background:var(--soft)}
+:root[data-theme="dark"] .steps button.on,@media (prefers-color-scheme:dark){}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--b);outline-offset:2px}
+h2{font-size:24px;margin-bottom:6px}
+.ask{color:var(--mute);margin:0 0 14px}
+.why{background:var(--soft);border-radius:8px;padding:12px 14px;font-size:14.5px;margin:14px 0}
+.why b{font-weight:600}
+.row{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--rule);flex-wrap:wrap}
+.row:first-of-type{border-top:0}
+.row label{flex:1;min-width:200px}
+.row small{display:block;color:var(--mute);font-size:13px}
+input[type=number],select{font:inherit;background:var(--bg);color:var(--ink);border:1px solid var(--rule);border-radius:6px;padding:6px 8px;width:130px}
+select{width:auto}
+input[type=checkbox]{width:20px;height:20px;accent-color:var(--teal)}
+.nav{display:flex;justify-content:space-between;margin-top:16px}
+.nav button{font:inherit;border:1px solid var(--teal);background:var(--teal);color:#fff;padding:9px 18px;border-radius:6px;cursor:pointer;font-weight:500}
+.nav button.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+.nav button:disabled{opacity:.35;cursor:default}
+.big{font:700 clamp(34px,6vw,52px)/1 "Bricolage Grotesque",sans-serif;margin:4px 0 2px}
+.mute{color:var(--mute);font-size:14px}
+.warn{color:var(--warn);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+td,th{padding:7px 6px;border-top:1px solid var(--rule);text-align:right}
+th{font-weight:600;color:var(--mute)}
+td:first-child,th:first-child{text-align:left}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.tablewrap{overflow-x:auto}
+aside{position:sticky;top:12px}
+@media(max-width:860px){aside{position:static}}
+svg{width:100%;height:auto;display:block}
+.tgl{float:right;border:1px solid var(--rule);background:transparent;color:var(--mute);border-radius:6px;font:inherit;font-size:13px;padding:4px 10px;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+<button class="tgl" id="tgl" aria-label="Switch light or dark theme">Theme</button>
+<h1>From signed deal to revenue</h1>
+<p>You don't need accounting training. Answer five plain-English questions about a deal, the way ASC 606 asks them, and see how much revenue you can count, and when.</p>
+</header>
+<main>
+<section class="card" id="wiz" aria-live="polite"></section>
+<aside class="card" id="out"></aside>
+</main>
+<script>
+var COLORS=["var(--a)","var(--b)","var(--c)"];
+var S={step:0,price:150000,bonus:10000,likely:true,billing:"upfront",
+checks:[true,true,true,true,true],
+items:[
+{name:"Software subscription",ssp:120000,months:12,distinct:true,timing:"over"},
+{name:"Implementation and setup",ssp:30000,months:3,distinct:true,timing:"over"},
+{name:"Premium support",ssp:18000,months:12,distinct:true,timing:"over"}]};
+var CHECKS=["Both sides have approved the contract (signed or otherwise agreed).","Each side's rights are clear: what you deliver and what they must do.","Payment terms are clear.","The deal has real business purpose, not a round-trip of cash.","You expect to collect the money."];
+var STEPS=["Contract","Promises","Price","Split","Timing"];
+var $=function(id){return document.getElementById(id)};
+function $f(n){return "$"+Math.round(n).toLocaleString("en-US")}
+
+function calc(){
+ var ok=S.checks.every(Boolean);
+ var inc=S.likely?S.bonus:0, total=ok?S.price+inc:0;
+ var owner=S.items.map(function(it,i){return(i==0||it.distinct)?i:0});
+ var pos=[];S.items.forEach(function(it,i){if(owner[i]==i)pos.push({i:i,name:it.name,ssp:0,parts:[]})});
+ S.items.forEach(function(it,i){var p=pos.filter(function(x){return x.i==owner[i]})[0];p.ssp+=it.ssp;p.parts.push(it.name)});
+ var sum=pos.reduce(function(a,p){return a+p.ssp},0)||1;
+ var N=Math.max.apply(null,S.items.map(function(x){return x.months}));
+ pos.forEach(function(p){
+  var it=S.items[p.i];p.alloc=total*p.ssp/sum;p.sched=[];
+  for(var m=0;m<N;m++)p.sched.push(it.timing=="point"?(m==0?p.alloc:0):(m<it.months?p.alloc/it.months:0));
+  if(p.parts.length>1)p.name=p.parts.join(" + ");
+ });
+ var byM=[];for(var m=0;m<N;m++)byM.push(pos.reduce(function(a,p){return a+p.sched[m]},0));
+ return{ok:ok,inc:inc,total:total,pos:pos,N:N,byM:byM,sum:sum};
+}
+
+function numRow(label,hint,key,val,idx,f){
+ return '<div class="row"><label>'+label+(hint?'<small>'+hint+'</small>':'')+'</label><input type="number" min="0" value="'+val+'" data-k="'+key+'"'+(idx!=null?' data-i="'+idx+'" data-f="'+f+'"':'')+'></div>';
+}
+
+function stepHtml(c){
+ var h="";
+ if(S.step==0){
+  h+='<h2>Is there a contract?</h2><p class="ask">Revenue can only start once a real contract exists. Check each statement that is true for this deal.</p>';
+  CHECKS.forEach(function(t,i){h+='<div class="row"><label for="c'+i+'">'+t+'</label><input type="checkbox" id="c'+i+'" data-c="'+i+'"'+(S.checks[i]?' checked':'')+'></div>'});
+  h+='<div class="why"><b>Why it matters:</b> if any box fails, the deal is not a contract under ASC 606 yet. Cash received is held as a liability, not revenue. Untick one to see.</div>';
+ }
+ if(S.step==1){
+  h+='<h2>What did you promise to deliver?</h2><p class="ask">List each thing the customer is buying. For each, decide whether it is a separate promise (accountants call it a performance obligation).</p>';
+  S.items.forEach(function(it,i){
+   h+='<div class="row"><label>'+it.name+'<small>'+(i==0?'The core product. Always its own promise.':'Could the customer use this without the rest, or buy it from someone else? If yes, tick.')+'</small></label>'
+   +(i==0?'':'<input type="checkbox" data-i="'+i+'" data-f="distinct" aria-label="Separate promise"'+(it.distinct?' checked':'')+'>')+'</div>';
+  });
+  h+='<div class="why"><b>Why it matters:</b> separate promises are timed separately. If implementation is so customized that the software is useless without it, it is not separate and gets folded into the subscription, so its revenue arrives slowly. Untick it and watch the chart.</div>';
+ }
+ if(S.step==2){
+  h+='<h2>What is the price?</h2><p class="ask">Count the money you are entitled to, including conditional amounts only when it is very unlikely you will have to give them back.</p>';
+  h+=numRow("Fixed contract price","What the customer agreed to pay in total","price",S.price);
+  h+=numRow("Performance bonus","Extra payable if go-live happens on time","bonus",S.bonus);
+  h+='<div class="row"><label>Are you highly confident you will earn the bonus?<small>"Maybe" does not count.</small></label><select data-k="likely"><option value="1"'+(S.likely?' selected':'')+'>Highly likely</option><option value="0"'+(S.likely?'':' selected')+'>Uncertain</option></select></div>';
+  h+='<div class="why"><b>Why it matters:</b> the rule is conservative. Uncertain amounts stay out until the doubt clears, so a bonus you are only hoping for adds nothing today. Counted price: <b>'+$f(c.total)+'</b>.</div>';
+ }
+ if(S.step==3){
+  h+='<h2>How is the price split?</h2><p class="ask">The price is divided by what each promise would cost if sold alone (its standalone price). A discount is shared proportionally.</p>';
+  S.items.forEach(function(it,i){h+=numRow(it.name,"Price if sold alone","ssp",it.ssp,i,"ssp")});
+  var disc=c.sum-c.total;
+  h+='<div class="why"><b>Why it matters:</b> list prices add up to <b>'+$f(c.sum)+'</b> but the deal counts <b>'+$f(c.total)+'</b>, '+(disc>0?'a discount of '+$f(disc)+' spread across every promise, not just the one you negotiated.':'so no discount is being spread.')+'</div>';
+ }
+ if(S.step==4){
+  h+='<h2>When does each piece become revenue?</h2><p class="ask">Revenue is counted as you deliver. Spread it over the period if the customer receives value gradually. Count it all at once if they get it at one moment.</p>';
+  S.items.forEach(function(it,i){
+   h+='<div class="row"><label>'+it.name+'</label><select data-i="'+i+'" data-f="timing"><option value="over"'+(it.timing=="over"?' selected':'')+'>Over time</option><option value="point"'+(it.timing=="point"?' selected':'')+'>At one moment</option></select>'
+   +numRow("","months","months",it.months,i,"months").replace('<label></label>','<label><small>Months to deliver</small></label>')+'</div>';
+  });
+  var first=c.byM[0]||0;
+  var billed=S.billing=="upfront"?c.total:c.total/c.N;
+  h+='<div class="row"><label>How do you bill?</label><select data-k="billing"><option value="upfront"'+(S.billing=="upfront"?' selected':'')+'>All at signing</option><option value="monthly"'+(S.billing=="monthly"?' selected':'')+'>Evenly each month</option></select></div>';
+  h+='<div class="why"><b>Billing is not revenue.</b> In month 1 you bill <b>'+$f(billed)+'</b> and recognize <b>'+$f(first)+'</b>. '+(billed>first?'The extra '+$f(billed-first)+' is deferred revenue: cash you hold but still owe in service.':'You have recognized more than you billed, so the difference is an unbilled receivable.')+'</div>';
+ }
+ h+='<div class="nav"><button class="ghost" data-nav="-1"'+(S.step==0?' disabled':'')+'>Back</button><button data-nav="1"'+(S.step==4?' disabled':'')+'>Next step</button></div>';
+ return h;
+}
+
+function chart(c){
+ var W=520,H=190,pl=8,bw=(W-pl*2)/c.N,mx=Math.max.apply(null,c.byM.concat([1]));
+ var s='<svg viewBox="0 0 '+W+' '+(H+24)+'" role="img" aria-label="Revenue recognized by month">';
+ for(var m=0;m<c.N;m++){
+  var y=H;
+  c.pos.forEach(function(p,k){var v=p.sched[m],hh=v/mx*(H-10);y-=hh;if(hh>0)s+='<rect x="'+(pl+m*bw+2)+'" y="'+y+'" width="'+(bw-4)+'" height="'+hh+'" fill="'+COLORS[k%3]+'"/>'});
+  s+='<text x="'+(pl+m*bw+bw/2)+'" y="'+(H+16)+'" font-size="11" text-anchor="middle" fill="var(--mute)">'+(m+1)+'</text>';
+ }
+ return s+'<line x1="0" x2="'+W+'" y1="'+H+'" y2="'+H+'" stroke="var(--rule)"/></svg>';
+}
+
+function outHtml(c){
+ if(!c.ok)return '<h3>No revenue yet</h3><p class="big warn">$0</p><p class="mute">The deal does not meet the five contract tests, so ASC 606 says nothing can be recognized. Fix the failing item in step 1.</p>';
+ var h='<p class="mute" style="margin:0">Total revenue to expect from this deal</p><div class="big">'+$f(c.total)+'</div><p class="mute">Over '+c.N+' months. Peak month: '+$f(Math.max.apply(null,c.byM))+'.</p>';
+ h+=chart(c)+'<p class="mute" style="margin:2px 0 12px">Revenue recognized per month</p><div class="tablewrap"><table><tr><th>Promise</th><th>Share of price</th><th>Revenue</th></tr>';
+ c.pos.forEach(function(p,k){h+='<tr><td><span class="sw" style="background:'+COLORS[k%3]+'"></span>'+p.name+'</td><td>'+Math.round(p.ssp/c.sum*100)+'%</td><td>'+$f(p.alloc)+'</td></tr>'});
+ return h+'</table></div>';
+}
+
+function render(){
+ var c=calc(),h='<div class="steps">';
+ STEPS.forEach(function(n,i){h+='<button data-go="'+i+'" class="'+(i==S.step?'on':(i<S.step?'done':''))+'">'+(i+1)+'. '+n+'</button>'});
+ $("wiz").innerHTML=h+'</div>'+stepHtml(c);
+ $("out").innerHTML=outHtml(c);
+}
+
+document.addEventListener("click",function(e){
+ var t=e.target.closest("[data-go],[data-nav]");if(!t)return;
+ if(t.dataset.go!=null)S.step=+t.dataset.go;else S.step+=+t.dataset.nav;
+ render();
+});
+document.addEventListener("change",function(e){
+ var t=e.target,d=t.dataset;
+ if(d.c!=null)S.checks[+d.c]=t.checked;
+ else if(d.i!=null){var v=t.type=="checkbox"?t.checked:(t.type=="number"?Math.max(0,+t.value||0):t.value);if(d.f=="months")v=Math.max(1,Math.min(24,Math.round(v)));S.items[+d.i][d.f]=v}
+ else if(d.k=="likely")S.likely=t.value=="1";
+ else if(d.k)S[d.k]=t.type=="number"?Math.max(0,+t.value||0):t.value;
+ else return;
+ render();
+});
+$("tgl").addEventListener("click",function(){
+ var r=document.documentElement,dark=r.dataset.theme?r.dataset.theme=="dark":matchMedia("(prefers-color-scheme:dark)").matches;
+ r.dataset.theme=dark?"light":"dark";
+});
+render();
+</script>
+</body>
+</html>
